@@ -98,6 +98,15 @@ export function CameraDetailPanel({ camera, onClose }: Props) {
           <span className="material-symbols-outlined text-sm">open_in_new</span>
         </a>
       </div>
+
+      <div className="flex items-center gap-2 border-t border-outline px-4 py-2.5">
+        <span className="material-symbols-outlined text-sm text-primary">
+          visibility
+        </span>
+        <span className="font-headline text-[10px] text-on-surface-variant">
+          Vision AI — brak wykrytych zagrożeń
+        </span>
+      </div>
     </div>
   );
 }

@@ -53,10 +53,39 @@ export type TerritoryFeatureCollection = GeoJSON.FeatureCollection<
 
 export type PanelId = 'map' | 'live' | 'layers' | 'risk' | 'files' | 'social';
 
+// ── Emergency 112 calls ──
+
+export type EmergencyPriority = 'critical' | 'high' | 'medium' | 'low';
+export type EmergencyCategory =
+  | 'medical'
+  | 'fire'
+  | 'accident'
+  | 'flood'
+  | 'infrastructure'
+  | 'other';
+
+export type EmergencyCall = {
+  id: string;
+  timestamp: string;
+  priority: EmergencyPriority;
+  category: EmergencyCategory;
+  title: string;
+  description: string;
+  location: string;
+  lat: number;
+  lon: number;
+  callerName: string;
+  callerPhone: string;
+  status: 'new' | 'dispatched' | 'in-progress' | 'resolved';
+  assignedUnit?: string;
+  notes?: string;
+};
+
 export type LayerToggles = {
   hospitals: boolean;
   floodZones: boolean;
   cameras: boolean;
+  emergencyCalls: boolean;
   powiatBoundaries: boolean;
   gminaBoundaries: boolean;
 };

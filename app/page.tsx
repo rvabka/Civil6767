@@ -1,7 +1,7 @@
 'use client';
 
 import dynamic from 'next/dynamic';
-import { useMemo, useState, useCallback } from 'react';
+import { useEffect, useMemo, useState, useCallback } from 'react';
 
 import { BottomTicker } from '@/components/layout/BottomTicker';
 import { SideNavBar } from '@/components/layout/SideNavBar';
@@ -9,6 +9,8 @@ import { TopNavBar } from '@/components/layout/TopNavBar';
 import type { TopTab } from '@/components/layout/TopNavBar';
 
 import { CameraDetailPanel } from '@/components/detail/CameraDetailPanel';
+import { EmergencyCallDetailPanel } from '@/components/detail/EmergencyCallDetailPanel';
+import { EmergencyCallListPanel } from '@/components/detail/EmergencyCallListPanel';
 import { FloodHospitalsPanel } from '@/components/detail/FloodHospitalsPanel';
 import { FloodOverviewCard } from '@/components/detail/FloodOverviewCard';
 import { HospitalDetailPanel } from '@/components/detail/HospitalDetailPanel';
@@ -23,6 +25,7 @@ import { SocialFeedPanel } from '@/components/panels/SocialFeedPanel';
 import { LivePanel } from '@/components/panels/LivePanel';
 import { RiskPanel } from '@/components/panels/RiskPanel';
 import { TerritorialFilterPanel } from '@/components/panels/TerritorialFilterPanel';
+import { OnboardingOverlay } from '@/components/layout/OnboardingOverlay';
 
 import { useTerritories } from '@/lib/useTerritories';
 import { useHospitals, useHospitalStats } from '@/lib/useHospitals';
@@ -38,6 +41,7 @@ import { usePersistedState } from '@/lib/usePersistedState';
 import type {
   ApiHospital,
   CameraFeed,
+  EmergencyCall,
   LayerToggles,
   PanelId,
   TerritoryKind,
@@ -59,6 +63,7 @@ const DEFAULT_LAYERS: LayerToggles = {
   hospitals: true,
   floodZones: true,
   cameras: true,
+  emergencyCalls: true,
   powiatBoundaries: true,
   gminaBoundaries: true
 };
@@ -83,6 +88,19 @@ export default function HomePage() {
   const [selectedHospital, setSelectedHospital] = useState<ApiHospital | null>(
     null
   );
+  const [selectedEmergency, setSelectedEmergency] =
+    useState<EmergencyCall | null>(null);
+  const [showOnboarding, setShowOnboarding] = useState(false);
+
+  useEffect(() => {
+    if (
+      typeof window !== 'undefined' &&
+      !localStorage.getItem('cd:onboarding-done')
+    ) {
+      setShowOnboarding(true);
+    }
+  }, []);
+
   const [mockFloodEnabled, setMockFloodEnabled] = useState(false);
   const [mockFloodSelectedOptionId, setMockFloodSelectedOptionId] = useState<
     string | null
@@ -103,7 +121,7 @@ export default function HomePage() {
     });
   }, []);
   const [openDrawers, setOpenDrawers] = useState<Set<string>>(
-    () => new Set(['flood-hospitals', 'flood-overview'])
+    () => new Set(['flood-hospitals', 'flood-overview', 'emergency-calls'])
   );
 
   const toggleDrawer = useCallback((id: string) => {
@@ -371,17 +389,24 @@ export default function HomePage() {
               onSelectCamera={camera => {
                 setSelectedCamera(camera);
                 setSelectedHospital(null);
+                setSelectedEmergency(null);
               }}
               hospitals={hospitals}
               onSelectHospital={hospital => {
                 setSelectedHospital(hospital);
                 setSelectedCamera(null);
+                setSelectedEmergency(null);
               }}
               onDeselectHospital={() => setSelectedHospital(null)}
               selectedHospital={selectedHospital}
               floodPrediction={floodPrediction}
               mockFloodRouting={mockFloodEnabled ? mockFloodRouting : null}
               mockFloodSelectedOptionId={mockFloodSelectedOptionId}
+              onSelectEmergency={call => {
+                setSelectedEmergency(call);
+                setSelectedCamera(null);
+                setSelectedHospital(null);
+              }}
             />
           </div>
 
@@ -421,46 +446,64 @@ export default function HomePage() {
                   />
                 </RightPanelDrawer>
               )}
-              {/* Mock flood scenario */}
-              {mockFloodEnabled && !selectedCamera && !selectedHospital && (
+              {selectedEmergency && (
                 <RightPanelDrawer
-                  id="mock-flood"
-                  label="Symulacja powodzi"
-                  icon="emergency"
-                  isOpen={openDrawers.has('mock-flood')}
-                  onToggle={toggleDrawer}
-                  accentColor="text-critical"
+                  id="emergency-detail"
+                  label="Zgłoszenie 112"
+                  icon="call"
+                  isOpen
+                  onToggle={() => setSelectedEmergency(null)}
+                  accentColor="text-red-600"
                 >
-                  {mockFloodLoading && (
-                    <div className="rounded border border-outline bg-white p-6 shadow-sm">
-                      <span className="font-headline text-xs text-on-surface-variant animate-pulse">
-                        Generowanie scenariusza ewakuacji...
-                      </span>
-                    </div>
-                  )}
-                  {!mockFloodLoading && mockFloodRouting && (
-                    <MockFloodScenarioPanel
-                      data={mockFloodRouting}
-                      onClose={() => toggleDrawer('mock-flood')}
-                      selectedOptionId={mockFloodSelectedOptionId}
-                      onSelectOption={setMockFloodSelectedOptionId}
-                    />
-                  )}
-                  {!mockFloodLoading && !mockFloodRouting && (
-                    <div className="rounded border border-outline bg-white p-6 text-center shadow-sm">
-                      <span className="material-symbols-outlined mb-2 text-3xl text-on-surface-variant">
-                        cloud_off
-                      </span>
-                      <p className="font-headline text-xs text-on-surface-variant">
-                        Nie udalo sie pobrac danych symulacji. Sprawdz
-                        polaczenie z API.
-                      </p>
-                    </div>
-                  )}
+                  <EmergencyCallDetailPanel
+                    call={selectedEmergency}
+                    onClose={() => setSelectedEmergency(null)}
+                  />
                 </RightPanelDrawer>
               )}
+              {/* Mock flood scenario */}
+              {mockFloodEnabled &&
+                !selectedCamera &&
+                !selectedHospital &&
+                !selectedEmergency && (
+                  <RightPanelDrawer
+                    id="mock-flood"
+                    label="Symulacja powodzi"
+                    icon="emergency"
+                    isOpen={openDrawers.has('mock-flood')}
+                    onToggle={toggleDrawer}
+                    accentColor="text-critical"
+                  >
+                    {mockFloodLoading && (
+                      <div className="rounded border border-outline bg-white p-6 shadow-sm">
+                        <span className="font-headline text-xs text-on-surface-variant animate-pulse">
+                          Generowanie scenariusza ewakuacji...
+                        </span>
+                      </div>
+                    )}
+                    {!mockFloodLoading && mockFloodRouting && (
+                      <MockFloodScenarioPanel
+                        data={mockFloodRouting}
+                        onClose={() => toggleDrawer('mock-flood')}
+                        selectedOptionId={mockFloodSelectedOptionId}
+                        onSelectOption={setMockFloodSelectedOptionId}
+                      />
+                    )}
+                    {!mockFloodLoading && !mockFloodRouting && (
+                      <div className="rounded border border-outline bg-white p-6 text-center shadow-sm">
+                        <span className="material-symbols-outlined mb-2 text-3xl text-on-surface-variant">
+                          cloud_off
+                        </span>
+                        <p className="font-headline text-xs text-on-surface-variant">
+                          Nie udalo sie pobrac danych symulacji. Sprawdz
+                          polaczenie z API.
+                        </p>
+                      </div>
+                    )}
+                  </RightPanelDrawer>
+                )}
 
-              {!selectedCamera && !selectedHospital && (
+              {!selectedCamera && !selectedHospital && !selectedEmergency && (
                 <RightPanelDrawer
                   id="flood-hospitals"
                   label="Szpitale – powódź"
@@ -490,6 +533,22 @@ export default function HomePage() {
                   floodOverview={floodOverview}
                   floodOverviewLoading={floodOverviewLoading}
                   mlGlobal={mlGlobal}
+                />
+              </RightPanelDrawer>
+              <RightPanelDrawer
+                id="emergency-calls"
+                label="Zgłoszenia 112"
+                icon="call"
+                isOpen={openDrawers.has('emergency-calls')}
+                onToggle={toggleDrawer}
+                accentColor="text-red-600"
+              >
+                <EmergencyCallListPanel
+                  onSelectCall={call => {
+                    setSelectedEmergency(call);
+                    setSelectedCamera(null);
+                    setSelectedHospital(null);
+                  }}
                 />
               </RightPanelDrawer>
             </div>
@@ -552,6 +611,11 @@ export default function HomePage() {
             )}
           </div>
         </div>
+      )}
+
+      {/* Onboarding overlay */}
+      {showOnboarding && (
+        <OnboardingOverlay onComplete={() => setShowOnboarding(false)} />
       )}
     </div>
   );

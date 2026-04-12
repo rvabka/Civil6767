@@ -23,6 +23,7 @@ import {
 import {
   CAMERA_CLUSTER_ZOOM_THRESHOLD,
   CAMERA_FEEDS,
+  EMERGENCY_CALLS,
   LUBELSKIE_CENTER,
   LUBELSKIE_INITIAL_ZOOM
 } from '@/lib/constants';
@@ -33,6 +34,7 @@ import {
 } from '@/components/detail/HospitalFloodRiskSection';
 import type {
   CameraFeed,
+  EmergencyCall,
   LayerToggles,
   TerritoryFeature,
   TerritoryFeatureCollection,
@@ -81,6 +83,7 @@ type Props = {
   floodPrediction?: FloodPredictionResponse | null;
   mockFloodRouting?: MockFloodRoutingResponse | null;
   mockFloodSelectedOptionId?: string | null;
+  onSelectEmergency?: (call: EmergencyCall) => void;
 };
 
 const BASE_STYLE = {
@@ -123,7 +126,8 @@ export default function LubelskieMap({
   selectedHospital,
   floodPrediction,
   mockFloodRouting,
-  mockFloodSelectedOptionId
+  mockFloodSelectedOptionId,
+  onSelectEmergency
 }: Props) {
   const powiatLayerRef = useRef<LeafletFeatureGroup | null>(null);
   const gminaLayerRef = useRef<LeafletFeatureGroup | null>(null);
@@ -251,6 +255,10 @@ export default function LubelskieMap({
 
         {layerToggles.cameras && (
           <CameraLayer onSelectCamera={onSelectCamera} />
+        )}
+
+        {layerToggles.emergencyCalls && (
+          <EmergencyCallLayer onSelectEmergency={onSelectEmergency} />
         )}
 
         {layerToggles.hospitals && hospitals && hospitals.length > 0 && (
@@ -1540,4 +1548,137 @@ function collectCoords(
     return geom.coordinates.flat() as Array<[number, number]>;
   }
   return geom.coordinates.flat(2) as Array<[number, number]>;
+}
+
+/* ── Emergency 112 call markers ── */
+
+const PRIORITY_COLORS: Record<string, string> = {
+  critical: '#bb0013',
+  high: '#e65100',
+  medium: '#f59e0b',
+  low: '#6b7280'
+};
+
+const CATEGORY_ICONS: Record<string, string> = {
+  medical: '🏥',
+  fire: '🔥',
+  accident: '🚗',
+  flood: '🌊',
+  infrastructure: '🏗️',
+  other: '⚠️'
+};
+
+function emergencyMarkerHtml(priority: string, category: string) {
+  const color = PRIORITY_COLORS[priority] ?? '#6b7280';
+  const icon = CATEGORY_ICONS[category] ?? '⚠️';
+  return `
+<div style="position:relative;width:36px;height:36px;">
+  <span style="position:absolute;inset:0;border-radius:50%;background:${color}30;animation:mock-pulse 2s ease-in-out infinite;"></span>
+  <span style="position:absolute;inset:4px;display:flex;align-items:center;justify-content:center;border-radius:50%;background:${color};border:2.5px solid #fff;box-shadow:0 2px 10px ${color}60;">
+    <span style="font-size:14px;line-height:1;">${icon}</span>
+  </span>
+</div>`;
+}
+
+function EmergencyCallLayer({
+  onSelectEmergency
+}: {
+  onSelectEmergency?: (call: EmergencyCall) => void;
+}) {
+  const icons = useMemo(() => {
+    const map = new Map<string, L.DivIcon>();
+    for (const call of EMERGENCY_CALLS) {
+      const key = `${call.priority}-${call.category}`;
+      if (!map.has(key)) {
+        map.set(
+          key,
+          L.divIcon({
+            className: 'emergency-marker-wrap',
+            html: emergencyMarkerHtml(call.priority, call.category),
+            iconSize: [36, 36],
+            iconAnchor: [18, 18],
+            popupAnchor: [0, -18]
+          })
+        );
+      }
+    }
+    return map;
+  }, []);
+
+  return (
+    <>
+      {EMERGENCY_CALLS.map(call => {
+        const key = `${call.priority}-${call.category}`;
+        const icon = icons.get(key)!;
+        const color = PRIORITY_COLORS[call.priority] ?? '#6b7280';
+        return (
+          <Marker
+            key={call.id}
+            position={[call.lat, call.lon]}
+            icon={icon}
+            pane={MARKER_PANE}
+            bubblingMouseEvents={false}
+            eventHandlers={{
+              click: () => onSelectEmergency?.(call)
+            }}
+          >
+            <Tooltip
+              direction="top"
+              offset={[0, -20]}
+              opacity={1}
+              className="map-camera-label"
+            >
+              112 · {call.title}
+            </Tooltip>
+            <Popup maxWidth={280}>
+              <div style={{ fontFamily: 'inherit' }}>
+                <div
+                  style={{
+                    background: color,
+                    color: '#fff',
+                    padding: '6px 12px',
+                    margin: '-12px -14px 0',
+                    borderRadius: '3px 3px 0 0',
+                    fontSize: 10,
+                    fontWeight: 700,
+                    textTransform: 'uppercase',
+                    letterSpacing: 0.5,
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 6
+                  }}
+                >
+                  <span>112</span>
+                  <span style={{ opacity: 0.7 }}>·</span>
+                  <span>
+                    {call.priority === 'critical'
+                      ? 'KRYTYCZNE'
+                      : call.priority === 'high'
+                        ? 'WYSOKIE'
+                        : call.priority === 'medium'
+                          ? 'ŚREDNIE'
+                          : 'NISKIE'}
+                  </span>
+                </div>
+                <div style={{ marginTop: 10, fontSize: 13, fontWeight: 700 }}>
+                  {call.title}
+                </div>
+                <div style={{ marginTop: 4, fontSize: 11, color: '#555' }}>
+                  {call.location}
+                </div>
+                <div style={{ marginTop: 6, fontSize: 11, color: '#666' }}>
+                  {call.description.slice(0, 120)}...
+                </div>
+                {call.assignedUnit && (
+                  <div style={{ marginTop: 6, fontSize: 10, color: '#888' }}>
+                    Jednostka: <strong>{call.assignedUnit}</strong>
+                  </div>
+                )}
+              </div>
+            </Popup>
+          </Marker>
+        );
+      })}
+    </>
+  );
 }

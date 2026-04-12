@@ -1,16 +1,16 @@
-import { CAMERA_FEEDS } from "@/lib/constants";
-import type { CameraFeed } from "@/lib/types";
-import { PanelShell } from "./PanelShell";
+import { CAMERA_FEEDS } from '@/lib/constants';
+import type { CameraFeed } from '@/lib/types';
+import { PanelShell } from './PanelShell';
 
 type Props = {
   onSelectCamera: (camera: CameraFeed) => void;
   onClose: () => void;
 };
 
-const ALERT_STYLE: Record<CameraFeed["alertLevel"], string> = {
-  good: "bg-primary/10 text-primary-dark border-primary/20",
-  meh: "bg-amber-500/10 text-amber-700 border-amber-500/20",
-  bad: "bg-critical/10 text-critical border-critical/20",
+const ALERT_STYLE: Record<CameraFeed['alertLevel'], string> = {
+  good: 'bg-primary/10 text-primary-dark border-primary/20',
+  meh: 'bg-amber-500/10 text-amber-700 border-amber-500/20',
+  bad: 'bg-critical/10 text-critical border-critical/20'
 };
 
 export function LivePanel({ onSelectCamera, onClose }: Props) {
@@ -25,7 +25,7 @@ export function LivePanel({ onSelectCamera, onClose }: Props) {
       }
     >
       <div className="flex flex-col gap-2">
-        {CAMERA_FEEDS.map((camera) => (
+        {CAMERA_FEEDS.map(camera => (
           <button
             type="button"
             key={camera.id}
@@ -47,6 +47,15 @@ export function LivePanel({ onSelectCamera, onClose }: Props) {
             </span>
           </button>
         ))}
+      </div>
+
+      <div className="mt-3 flex items-center gap-2 rounded border border-outline/50 bg-primary/5 px-3 py-2">
+        <span className="material-symbols-outlined text-sm text-primary">
+          visibility
+        </span>
+        <span className="font-headline text-[10px] text-on-surface-variant">
+          Vision AI — brak wykrytych zagrożeń
+        </span>
       </div>
     </PanelShell>
   );

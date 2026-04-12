@@ -1,5 +1,5 @@
-import type { LayerToggles } from "@/lib/types";
-import { PanelShell } from "./PanelShell";
+import type { LayerToggles } from '@/lib/types';
+import { PanelShell } from './PanelShell';
 
 type Props = {
   toggles: LayerToggles;
@@ -16,35 +16,41 @@ type Row = {
 
 const ROWS: Row[] = [
   {
-    key: "hospitals",
-    label: "Szpitale (status SOR)",
-    group: "Zasoby medyczne",
-    groupIcon: "local_hospital",
+    key: 'hospitals',
+    label: 'Szpitale (status SOR)',
+    group: 'Zasoby medyczne',
+    groupIcon: 'local_hospital'
   },
   {
-    key: "floodZones",
-    label: "Strefy zalewowe (ISOK)",
-    group: "Zagrożenia środowiskowe",
-    groupIcon: "warning",
+    key: 'floodZones',
+    label: 'Strefy zalewowe (ISOK)',
+    group: 'Zagrożenia środowiskowe',
+    groupIcon: 'warning'
   },
   {
-    key: "cameras",
-    label: "Kamery miejskie",
-    group: "Monitoring",
-    groupIcon: "videocam",
+    key: 'cameras',
+    label: 'Kamery miejskie',
+    group: 'Monitoring',
+    groupIcon: 'videocam'
   },
   {
-    key: "powiatBoundaries",
-    label: "Granice powiatów",
-    group: "Podział administracyjny",
-    groupIcon: "map",
+    key: 'emergencyCalls',
+    label: 'Zgłoszenia 112',
+    group: 'Monitoring',
+    groupIcon: 'videocam'
   },
   {
-    key: "gminaBoundaries",
-    label: "Granice gmin",
-    group: "Podział administracyjny",
-    groupIcon: "map",
+    key: 'powiatBoundaries',
+    label: 'Granice powiatów',
+    group: 'Podział administracyjny',
+    groupIcon: 'map'
   },
+  {
+    key: 'gminaBoundaries',
+    label: 'Granice gmin',
+    group: 'Podział administracyjny',
+    groupIcon: 'map'
+  }
 ];
 
 export function LayersPanel({ toggles, onToggle, onClose }: Props) {
@@ -75,7 +81,7 @@ export function LayersPanel({ toggles, onToggle, onClose }: Props) {
               </span>
               {group}
             </div>
-            {rows.map((row) => {
+            {rows.map(row => {
               const enabled = toggles[row.key];
               return (
                 <button
@@ -88,15 +94,15 @@ export function LayersPanel({ toggles, onToggle, onClose }: Props) {
                   <span
                     className={
                       enabled
-                        ? "relative h-4 w-8 rounded-full bg-primary shadow-inner"
-                        : "relative h-4 w-8 rounded-full bg-outline shadow-inner"
+                        ? 'relative h-4 w-8 rounded-full bg-primary shadow-inner'
+                        : 'relative h-4 w-8 rounded-full bg-outline shadow-inner'
                     }
                   >
                     <span
                       className={
                         enabled
-                          ? "absolute right-0.5 top-0.5 h-3 w-3 rounded-full bg-white transition-all"
-                          : "absolute left-0.5 top-0.5 h-3 w-3 rounded-full bg-white transition-all"
+                          ? 'absolute right-0.5 top-0.5 h-3 w-3 rounded-full bg-white transition-all'
+                          : 'absolute left-0.5 top-0.5 h-3 w-3 rounded-full bg-white transition-all'
                       }
                     />
                   </span>
