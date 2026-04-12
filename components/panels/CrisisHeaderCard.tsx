@@ -7,7 +7,10 @@ type Props = {
   onToggleMockFlood?: () => void;
 };
 
-export function CrisisHeaderCard({ mockFloodEnabled, onToggleMockFlood }: Props) {
+export function CrisisHeaderCard({
+  mockFloodEnabled,
+  onToggleMockFlood
+}: Props) {
   const { data: flood } = useFloodOverview();
 
   const stationCount = flood?.lubelskie_station_count ?? 0;
@@ -20,7 +23,7 @@ export function CrisisHeaderCard({ mockFloodEnabled, onToggleMockFlood }: Props)
     <div className="flex items-center gap-2 rounded border border-outline bg-white px-3 py-2 shadow-md">
       {/* Title */}
       <h2 className="font-headline text-xs font-bold leading-tight text-on-surface whitespace-nowrap">
-        CZK <span className="text-primary-dark">Lubelskie</span>
+        Hydr<span className="text-primary-dark">OS</span>
       </h2>
 
       <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-primary" />

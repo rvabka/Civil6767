@@ -4,9 +4,9 @@ import './globals.css';
 import { ToastProvider } from '@/components/layout/ToastProvider';
 
 export const metadata: Metadata = {
-  title: 'Centrum Dowodzenia | Lubelskie',
+  title: 'HydrOS | Powódź',
   description:
-    'Centrum dowodzenia kryzysowego dla województwa lubelskiego - mapa, kamery, ryzyko powodziowe.'
+    'System zarządzania kryzysem medycznym w warunkach powodzi — monitoring szpitali, predykcja zagrożeń, planowanie ewakuacji.'
 };
 
 export default function RootLayout({

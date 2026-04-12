@@ -2,9 +2,9 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 
 export const metadata: Metadata = {
-  title: 'Centrum Dowodzenia Lubelskie | Geospatial Intelligence',
+  title: 'HydrOS | Powódź',
   description:
-    'Interaktywna mapa województwa lubelskiego pełniąca rolę dashboardu decyzyjnego w sytuacjach kryzysowych.'
+    'System zarządzania kryzysem medycznym w warunkach powodzi — monitoring szpitali, predykcja zagrożeń, planowanie ewakuacji.'
 };
 
 export default function LandingPage() {
@@ -19,7 +19,7 @@ export default function LandingPage() {
       {/* Nagłówek */}
       <header className="fixed top-0 w-full z-50 flex justify-between items-center px-10 h-20 bg-white/90 backdrop-blur-xl border-b border-slate-100">
         <span className="text-xl font-bold tracking-tight text-gray-900 font-[Space_Grotesk] uppercase">
-          Lubelskie <span className="text-[#72BF44]">Command</span>
+          Hydr<span className="text-[#72BF44]">OS</span>
         </span>
         <nav className="hidden lg:flex gap-10 items-center">
           <a
@@ -66,14 +66,12 @@ export default function LandingPage() {
             />
             <div className="hero-gradient absolute inset-0 flex flex-col items-center justify-center text-center px-6">
               <h1 className="text-5xl md:text-7xl font-bold text-white font-[Space_Grotesk] max-w-4xl leading-[1.1] mb-6">
-                Dashboard decyzyjny
-                <br />
-                dla sytuacji kryzysowych.
+                HydrOS
               </h1>
               <p className="text-white/80 text-lg md:text-xl max-w-2xl font-light mb-10">
-                Interaktywna mapa województwa lubelskiego integrująca dane z
-                IMGW, szpitali i modeli ML — w czasie rzeczywistym. Prototyp na
-                hackathon Civil42.
+                System zarządzania zasobami szpitalnymi w warunkach powodzi —
+                integracja danych IMGW, szpitali i modeli ML w czasie
+                rzeczywistym.
               </p>
               <Link
                 href="/"
@@ -89,7 +87,7 @@ export default function LandingPage() {
                 <div className="w-8 h-8 rounded-full bg-slate-600 border-2 border-white"></div>
               </div>
               <span className="text-white/70 text-xs font-[Space_Grotesk] uppercase tracking-wider">
-                Hackathon Civil42
+                HydrOS — Powódź
               </span>
             </div>
           </div>
@@ -102,7 +100,7 @@ export default function LandingPage() {
         >
           <div>
             <span className="inline-block bg-gray-50 px-4 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-[0.2em] text-gray-500 mb-6 border border-gray-200">
-              Zestaw A — Kryzys medyczny w warunkach powodzi
+              O projekcie — HydrOS
             </span>
             <p className="text-4xl md:text-5xl font-medium font-[Space_Grotesk] leading-tight">
               Zarządzanie zasobami szpitalnymi w&nbsp;czasie powodzi —
@@ -231,9 +229,9 @@ export default function LandingPage() {
                   Interaktywna mapa GIS
                 </h3>
                 <p className="text-white/60 font-light leading-relaxed">
-                  Mapa województwa lubelskiego z podziałem na powiaty i gminy,
-                  wielowarstwowe nakładki: szpitale, strefy zalewowe ISOK,
-                  stacje IMGW, kamery monitoringu.
+                  Mapa z podziałem na powiaty i gminy, wielowarstwowe nakładki:
+                  szpitale, strefy zalewowe ISOK, stacje IMGW, kamery
+                  monitoringu.
                 </p>
               </div>
               <div className="flex items-center gap-3">
@@ -494,11 +492,10 @@ export default function LandingPage() {
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-start md:items-end gap-10">
           <div className="space-y-4">
             <h2 className="text-2xl font-bold font-[Space_Grotesk] uppercase">
-              Lubelskie <span className="text-[#72BF44]">Command</span>
+              Hydr<span className="text-[#72BF44]">OS</span>
             </h2>
             <p className="text-xs text-gray-500 font-[Space_Grotesk] uppercase tracking-widest opacity-60">
-              Hackathon Civil42 — zadanie specjalne Marszałka Województwa
-              Lubelskiego.
+              System zarządzania kryzysem medycznym w warunkach powodzi.
             </p>
           </div>
           <nav className="flex flex-wrap gap-x-10 gap-y-4">

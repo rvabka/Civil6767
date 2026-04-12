@@ -6,9 +6,10 @@
 
 Interaktywna mapa wojewodztwa lubelskiego pelniaca role dashboardu decyzyjnego w sytuacjach kryzysowych. System integruje dane z wielu zrodel i pozwala na podejmowanie decyzji opartych na danych w czasie rzeczywistym.
 
-**Zestaw danych: A — Kryzys medyczny w warunkach powodzi**
+**Zestaw danych: A — HydrOS w warunkach powodzi**
 
 System koncentruje sie na scenariuszu zarzadzania zasobami szpitalnymi podczas powodzi:
+
 - Identyfikacja szpitali zagrozonych powodzia
 - Ocena dostepnosci lozek i zasobow medycznych
 - Planowanie ewakuacji pacjentow z algorytmem routingu
@@ -35,37 +36,44 @@ System koncentruje sie na scenariuszu zarzadzania zasobami szpitalnymi podczas p
 ## Architektura
 
 ### Frontend (wizualizacja/)
+
 - **Next.js 16** z App Router i React 19
 - **Leaflet** — rendering mapy z wieloma warstwami GIS
 - **Tailwind CSS 4** — responsywny design system
 - **TypeScript** — pelna typowalnosc
 
 ### Backend (osobne repo/serwis)
+
 - **FastAPI** — REST API dla danych szpitalnych i powodziowych
 - **Model ML** — predykcja ryzyka powodziowego na podstawie danych IMGW
 - **Integracja IMGW** — dane hydrologiczne i meteorologiczne w czasie rzeczywistym
 - **Mock routing** — symulacja scenariusza ewakuacji szpitala z algorytmem routingu pacjentow
 
 ### Zrodla danych
-| Zrodlo | Typ | Dane |
-|--------|-----|------|
-| IMGW | Live API | Stany wod, ostrzezenia hydrologiczne i meteorologiczne |
-| ISOK/RZGW | WMS | Strefy zalewowe (woda 100-letnia) |
-| Wody Polskie | WMS | Warstwa rzek |
-| Portal szpitalny | Scraping | Liczba lozek, oddzialy, SOR |
-| Model ML | Predykcja | Ryzyko powodziowe per szpital |
-| Mock API | Demo | Scenariusze ewakuacji i routing pacjentow |
+
+| Zrodlo           | Typ       | Dane                                                   |
+| ---------------- | --------- | ------------------------------------------------------ |
+| IMGW             | Live API  | Stany wod, ostrzezenia hydrologiczne i meteorologiczne |
+| ISOK/RZGW        | WMS       | Strefy zalewowe (woda 100-letnia)                      |
+| Wody Polskie     | WMS       | Warstwa rzek                                           |
+| Portal szpitalny | Scraping  | Liczba lozek, oddzialy, SOR                            |
+| Model ML         | Predykcja | Ryzyko powodziowe per szpital                          |
+| Mock API         | Demo      | Scenariusze ewakuacji i routing pacjentow              |
 
 ## Kluczowe widoki
 
 ### Przeglad regionalny (Mapa)
+
 Glowny widok z interaktywna mapa, panelami bocznymi (warstwy, ryzyka, kamery, social media) i szczegolami po prawej stronie (predykcje ML, stany wod, scenariusze ewakuacji).
 
 ### Szpitale
+
 Widok listy szpitali z sortowaniem, wyszukiwaniem i szczegolami kazdego szpitala (oddzialy, lozka, SOR, generator, personel, ryzyko powodziowe).
 
 ### Symulacja powodzi (Mock)
+
 Przelacznik "Symulacja" w pasku statusu CZK aktywuje demonstracyjny scenariusz powodzi:
+
 - Wskazanie zagrozenego szpitala
 - 3 warianty routingu ewakuacji pacjentow
 - Scoring kazdego wariantu (pojemnosc, odleglosc, dopasowanie oddzialow, zlozonosc wykonania)
@@ -82,6 +90,7 @@ npm run dev
 ```
 
 Wymagane zmienne srodowiskowe:
+
 ```
 NEXT_PUBLIC_API_URL=<adres backend API>
 ```

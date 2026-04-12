@@ -153,7 +153,7 @@ export function TopNavBar({
           href="/landing"
           className="font-headline text-lg font-bold uppercase tracking-tight text-primary-dark hover:text-primary transition-colors"
         >
-          Centrum Dowodzenia
+          HydrOS
         </Link>
         <nav className="hidden h-full items-center gap-6 pt-1 md:flex">
           {NAV_ITEMS.map(item => (
