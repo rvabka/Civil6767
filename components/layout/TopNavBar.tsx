@@ -150,7 +150,7 @@ export function TopNavBar({
     <header className="fixed top-0 z-50 flex h-16 w-full items-center justify-between border-b border-outline bg-surface-variant px-8">
       <div className="flex items-center gap-8">
         <Link
-          href="/landing"
+          href="/"
           className="font-headline text-lg font-bold uppercase tracking-tight text-primary-dark hover:text-primary transition-colors"
         >
           HydrOS
