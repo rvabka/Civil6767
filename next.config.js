@@ -3,16 +3,21 @@ const nextConfig = {
   reactStrictMode: true,
   async rewrites() {
     const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-    if (!apiUrl) return [];
+    const ttsUrl =
+      process.env.NEXT_PUBLIC_TTS_URL || 'https://tts.szpitale.jakubw.cloud';
     return [
       {
         source: '/api/backend/voice-control',
-        destination: 'http://localhost:8000/api/voice-control'
+        destination: `${ttsUrl}/api/voice-control`
       },
-      {
-        source: '/api/backend/:path*',
-        destination: `${apiUrl}/api/:path*`
-      }
+      ...(apiUrl
+        ? [
+            {
+              source: '/api/backend/:path*',
+              destination: `${apiUrl}/api/:path*`
+            }
+          ]
+        : [])
     ];
   }
 };
