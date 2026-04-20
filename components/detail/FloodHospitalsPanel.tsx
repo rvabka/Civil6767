@@ -124,7 +124,10 @@ export function FloodHospitalsPanel({
           <div className="min-h-0 flex-1 overflow-y-auto p-3">
             <div className="flex flex-col gap-2">
               {sorted.map(h => {
-                const prob = h.flood_warning_risk_probability;
+                const prob =
+                  typeof h.flood_warning_risk_probability === 'number'
+                    ? h.flood_warning_risk_probability
+                    : 0;
                 const bucket = bucketForProbability(prob);
                 const meta = bucketMeta(bucket);
                 const pct = (prob * 100).toFixed(1);
@@ -170,10 +173,19 @@ export function FloodHospitalsPanel({
                           <strong>{h.nearest_station.station_name}</strong>
                           {' · '}
                           {h.nearest_station.river}
-                          {' · '}
-                          {h.nearest_station.distance_km.toFixed(1)} km
-                          {' · '}
-                          {h.nearest_station.station_water_level_cm} cm
+                          {typeof h.nearest_station.distance_km ===
+                            'number' && (
+                            <>
+                              {' · '}
+                              {h.nearest_station.distance_km.toFixed(1)} km
+                            </>
+                          )}
+                          {h.nearest_station.station_water_level_cm != null && (
+                            <>
+                              {' · '}
+                              {h.nearest_station.station_water_level_cm} cm
+                            </>
+                          )}
                         </span>
                       )}
                       <span>

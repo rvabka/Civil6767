@@ -304,8 +304,10 @@ export function HospitalListPanel({
                       />
                       {riskInfo && (
                         <span className="font-headline text-[9px] text-on-surface-variant">
-                          {riskInfo.nearest_risk_station_name} ·{' '}
-                          {riskInfo.distance_km.toFixed(1)} km
+                          {riskInfo.nearest_risk_station_name}
+                          {typeof riskInfo.distance_km === 'number' && (
+                            <> · {riskInfo.distance_km.toFixed(1)} km</>
+                          )}
                         </span>
                       )}
                       {hospital.has_sor === true && (

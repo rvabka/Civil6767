@@ -97,7 +97,10 @@ export function HospitalFloodRiskSection({ loading, mlPrediction }: Props) {
     );
   }
 
-  const probability = mlPrediction.flood_warning_risk_probability;
+  const probability =
+    typeof mlPrediction.flood_warning_risk_probability === 'number'
+      ? mlPrediction.flood_warning_risk_probability
+      : 0;
   const bucket = bucketForProbability(probability);
   const meta = bucketMeta(bucket);
   const pctDisplay = (probability * 100).toFixed(1);
@@ -177,7 +180,9 @@ export function HospitalFloodRiskSection({ loading, mlPrediction }: Props) {
           <div className="mt-1 grid grid-cols-3 gap-1 font-headline text-[10px] text-on-surface">
             <div>
               <span className="block font-bold">
-                {station.distance_km.toFixed(1)} km
+                {typeof station.distance_km === 'number'
+                  ? `${station.distance_km.toFixed(1)} km`
+                  : '—'}
               </span>
               <span className="text-[9px] uppercase text-on-surface-variant">
                 dystans
@@ -185,7 +190,7 @@ export function HospitalFloodRiskSection({ loading, mlPrediction }: Props) {
             </div>
             <div>
               <span className="block font-bold">
-                {station.station_water_level_cm} cm
+                {station.station_water_level_cm ?? '—'} cm
               </span>
               <span className="text-[9px] uppercase text-on-surface-variant">
                 poziom
@@ -193,7 +198,9 @@ export function HospitalFloodRiskSection({ loading, mlPrediction }: Props) {
             </div>
             <div>
               <span className="block font-bold">
-                {station.station_flow_m3s.toFixed(1)} m³/s
+                {typeof station.station_flow_m3s === 'number'
+                  ? `${station.station_flow_m3s.toFixed(1)} m³/s`
+                  : '—'}
               </span>
               <span className="text-[9px] uppercase text-on-surface-variant">
                 przepływ
@@ -245,7 +252,7 @@ export function HospitalFloodRiskPill({
   const meta = bucketMeta(bucket);
 
   const suffix =
-    typeof probability === 'number'
+    typeof probability === 'number' && !Number.isNaN(probability)
       ? ` · ${(probability * 100).toFixed(1)}%`
       : '';
 

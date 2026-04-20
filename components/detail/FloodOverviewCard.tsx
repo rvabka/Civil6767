@@ -54,7 +54,11 @@ export function FloodOverviewCard({
   const hasDanger = hasHydro || hasMeteo;
 
   // Use ML global probability for the risk banner
-  const mlProbability = mlGlobal?.flood_warning_risk_probability ?? null;
+  const rawMlProbability = mlGlobal?.flood_warning_risk_probability;
+  const mlProbability =
+    typeof rawMlProbability === 'number' && !Number.isNaN(rawMlProbability)
+      ? rawMlProbability
+      : null;
   const mlBucket =
     mlProbability != null ? bucketForProbability(mlProbability) : null;
   const mlMeta = mlBucket ? bucketMeta(mlBucket) : null;

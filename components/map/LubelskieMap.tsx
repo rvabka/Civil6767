@@ -1173,21 +1173,29 @@ function HospitalPopupContent({
                 }}
               >
                 Predykcja ML: {meta.label}
-                {mlPrediction && (
-                  <span style={{ fontWeight: 600, textTransform: 'none' }}>
-                    {' '}
-                    (
-                    {(
-                      mlPrediction.flood_warning_risk_probability * 100
-                    ).toFixed(1)}
-                    %)
-                  </span>
-                )}
+                {mlPrediction &&
+                  typeof mlPrediction.flood_warning_risk_probability ===
+                    'number' && (
+                    <span style={{ fontWeight: 600, textTransform: 'none' }}>
+                      {' '}
+                      (
+                      {(
+                        mlPrediction.flood_warning_risk_probability * 100
+                      ).toFixed(1)}
+                      %)
+                    </span>
+                  )}
               </div>
               {mlPrediction?.nearest_station ? (
                 <div style={{ fontSize: 10, color: '#444', marginTop: 1 }}>
-                  {mlPrediction.nearest_station.station_name} ·{' '}
-                  {mlPrediction.nearest_station.distance_km.toFixed(1)} km
+                  {mlPrediction.nearest_station.station_name}
+                  {typeof mlPrediction.nearest_station.distance_km ===
+                    'number' && (
+                    <>
+                      {' · '}
+                      {mlPrediction.nearest_station.distance_km.toFixed(1)} km
+                    </>
+                  )}
                 </div>
               ) : !mlPrediction ? (
                 <div style={{ fontSize: 10, color: '#444', marginTop: 1 }}>
@@ -1275,13 +1283,14 @@ function RiskStationLayer({
                 <strong>{station.station_name}</strong> ({station.river})
                 <br />
                 Poziom wody: {station.latest_water_level_cm} cm
-                {station.trend_cm_per_hour !== 0 && (
-                  <>
-                    <br />
-                    Trend: {station.trend_cm_per_hour > 0 ? '+' : ''}
-                    {station.trend_cm_per_hour.toFixed(1)} cm/h
-                  </>
-                )}
+                {typeof station.trend_cm_per_hour === 'number' &&
+                  station.trend_cm_per_hour !== 0 && (
+                    <>
+                      <br />
+                      Trend: {station.trend_cm_per_hour > 0 ? '+' : ''}
+                      {station.trend_cm_per_hour.toFixed(1)} cm/h
+                    </>
+                  )}
                 <br />
                 <span
                   style={{
